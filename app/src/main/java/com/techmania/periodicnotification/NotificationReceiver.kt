@@ -26,6 +26,7 @@ class NotificationReceiver : BroadcastReceiver() {
     fun createNotification(context: Context?) {
 
         context?.let {
+
             val builder = NotificationCompat.Builder(it, CHANNEL_ID)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -37,21 +38,13 @@ class NotificationReceiver : BroadcastReceiver() {
                 val manager = it.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 manager.createNotificationChannel(channel)
 
-                builder.apply {
-                    setSmallIcon(R.drawable.small_icon)
-                    setContentTitle("Notification Title")
-                    setContentText("Notification Message")
-                    priority = NotificationCompat.PRIORITY_HIGH
-                }
+            }
 
-
-            } else {
-                builder.apply {
-                    setSmallIcon(R.drawable.small_icon)
-                    setContentTitle("Notification Title")
-                    setContentText("Notification Message")
-                    priority = NotificationCompat.PRIORITY_HIGH
-                }
+            builder.apply {
+                setSmallIcon(R.drawable.small_icon)
+                setContentTitle("Notification Title")
+                setContentText("Notification Message")
+                priority = NotificationCompat.PRIORITY_HIGH
             }
 
             val notificationManagerCompat = NotificationManagerCompat.from(it)

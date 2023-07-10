@@ -16,11 +16,13 @@ import android.os.Bundle
 import android.util.Log
 import android.webkit.PermissionRequest
 import androidx.activity.result.ActivityResultLauncher
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.techmania.periodicnotification.databinding.ActivityMainBinding
@@ -42,7 +44,21 @@ class MainActivity : AppCompatActivity() {
             //Request POST_NOTIFICATION permission for API 33 and above
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
                 if (ContextCompat.checkSelfPermission(this,Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED){
-                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS),1)
+
+                    if(shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)){
+                        //show a message
+                        Snackbar.make(
+                            mainBinding.constraintLayout,
+                            "Please allow the permission to take notification",
+                            Snackbar.LENGTH_LONG
+                        ).setAction("Allow"){
+                            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS),1)
+                        }.show()
+                    }else{
+
+                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS),1)
+
+                    }
                 }else{
                     setNotificationTime()
                 }
@@ -95,6 +111,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     //result  of the request permission
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -106,6 +123,14 @@ class MainActivity : AppCompatActivity() {
 
             setNotificationTime()
 
+        }else{
+            Snackbar.make(
+                mainBinding.constraintLayout,
+                "Please allow the permission to take notification",
+                Snackbar.LENGTH_LONG
+            ).setAction("Allow"){
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS),1)
+            }.show()
         }
 
     }
